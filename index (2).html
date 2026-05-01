@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rehearsal Dinner · RSVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white: #ffffff;
+  --off: #f7f6f3;
+  --border: rgba(42,68,55,0.12);
+  --green: #2a4437;
+  --green-mid: #3d6654;
+  --green-light: #e8f0ec;
+  --navy: #1a2840;
+  --gold: #c9a96e;
+  --gold-light: #f5ede0;
+  --red: #7a3535;
+  --red-light: #fdf0f0;
+  --text: #1e1e1e;
+  --muted: #7a7a7a;
+  --light: #b8b8b8;
+  --radius: 14px;
+  --radius-sm: 9px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  background: var(--off);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 20px 80px;
+}
+
+/* Header */
+.hdr { text-align: center; margin-bottom: 36px; animation: up 0.7s ease both; }
+.hdr-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.hdr-tag::before, .hdr-tag::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+.hdr h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(34px, 6vw, 52px);
+  font-weight: 400;
+  color: var(--navy);
+  line-height: 1.08;
+}
+.hdr h1 em { font-style: italic; color: var(--green-mid); }
+.hdr-sub { margin-top: 12px; font-size: 13px; color: var(--muted); letter-spacing: 0.02em; }
+
+/* Card */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  width: 100%;
+  max-width: 520px;
+  padding: 38px;
+  box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset,
+              0 16px 48px rgba(26,40,64,0.08),
+              0 2px 8px rgba(26,40,64,0.04);
+  animation: up 0.7s 0.1s ease both;
+}
+
+.step { display: none; }
+.step.active { display: block; animation: up 0.35s ease both; }
+
+/* Labels */
+.sec-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 5px;
+}
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.sec-desc { font-size: 13px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
+
+/* Search */
+.search-wrap { position: relative; margin-bottom: 14px; }
+.search-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+input.search-input {
+  width: 100%;
+  padding: 13px 14px 13px 40px;
+  background: var(--off);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+input.search-input::placeholder { color: var(--light); }
+input.search-input:focus {
+  border-color: var(--green);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(42,68,55,0.07);
+}
+
+/* Results */
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.results-list::-webkit-scrollbar { width: 4px; }
+.results-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.guest-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: var(--white);
+  gap: 12px;
+  transition: border-color 0.15s, background 0.15s, transform 0.12s, box-shadow 0.15s;
+}
+.guest-row:hover {
+  border-color: var(--green);
+  background: var(--green-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(42,68,55,0.1);
+}
+.guest-row:active { transform: translateY(0); }
+.guest-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 13px; font-style: italic;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.guest-info { flex: 1; min-width: 0; }
+.guest-name { font-size: 14px; font-weight: 400; color: var(--navy); }
+.guest-partner { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.guest-arrow { color: var(--light); font-size: 18px; line-height: 1; }
+.no-results { text-align: center; padding: 28px 0; color: var(--muted); font-size: 13px; }
+
+/* ── Attendance blocks ── */
+.attend-block {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--off);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.attend-block:last-child { margin-bottom: 0; }
+.attend-block.attending { border-color: var(--green); }
+.attend-block.declining { border-color: var(--red); }
+
+.attend-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px 14px;
+}
+.attend-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 12px; font-style: italic;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.attend-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--navy);
+  flex: 1;
+}
+.you-badge {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--green-light); color: var(--green-mid);
+  padding: 3px 9px; border-radius: 20px;
+}
+
+.attend-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+.attend-btn {
+  padding: 12px 10px;
+  border: none;
+  background: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  color: var(--muted);
+}
+.attend-btn:first-child { border-right: 1px solid var(--border); }
+.attend-btn:hover { background: var(--off); }
+
+.attend-btn.yes-active {
+  background: var(--green-light);
+  color: var(--green);
+}
+.attend-btn.no-active {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+/* ── Meal blocks ── */
+.person-block {
+  padding: 18px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--off);
+  margin-bottom: 14px;
+}
+.person-block:last-child { margin-bottom: 0; }
+.person-block.declining-block {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.person-name-row {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 400;
+  color: var(--navy);
+  margin-bottom: 13px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.meal-opts { display: flex; flex-direction: column; gap: 8px; }
+.meal-opt { position: relative; cursor: pointer; }
+.meal-opt input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+.meal-tile {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  border: 1.5px solid rgba(42,68,55,0.12);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.meal-opt input:checked ~ .meal-tile { border-color: var(--green); background: var(--green-light); }
+.meal-opt:hover .meal-tile { border-color: rgba(42,68,55,0.3); }
+.meal-radio {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+}
+.meal-opt input:checked ~ .meal-tile .meal-radio { border-color: var(--green); background: var(--green); }
+.meal-radio::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.meal-opt input:checked ~ .meal-tile .meal-radio::after { opacity: 1; }
+.meal-title { font-size: 13px; font-weight: 500; color: var(--navy); }
+.meal-sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+
+.declining-label {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--red-light);
+  border: 1.5px solid rgba(122,53,53,0.15);
+  font-size: 13px; color: var(--red);
+}
+
+/* Buttons */
+.btn {
+  display: block; width: 100%; padding: 14px;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: pointer; border: none;
+  transition: all 0.18s;
+}
+.btn-primary { background: var(--green); color: white; box-shadow: 0 4px 16px rgba(42,68,55,0.2); }
+.btn-primary:hover { background: var(--navy); box-shadow: 0 6px 20px rgba(26,40,64,0.25); }
+.btn-primary:active { transform: scale(0.985); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--border); margin-top: 10px; }
+.btn-ghost:hover { border-color: var(--green); color: var(--green); }
+
+.err { font-size: 12px; color: #b34040; text-align: center; margin-top: 10px; min-height: 18px; }
+
+/* Success */
+.success-wrap { text-align: center; padding: 12px 0 6px; }
+.success-ring {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  background: var(--green-light);
+  border: 2px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.success-wrap h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 400;
+  color: var(--navy); margin-bottom: 10px;
+}
+.success-wrap p { font-size: 13.5px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+
+.success-pills { display: flex; flex-direction: column; gap: 8px; }
+.success-pill {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--off); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 13px;
+}
+.success-pill.declining-pill { border-color: rgba(122,53,53,0.2); background: var(--red-light); }
+.sp-name { color: var(--navy); font-weight: 400; }
+.sp-meal { font-size: 12px; color: var(--green-mid); }
+.sp-no { font-size: 12px; color: var(--red); }
+
+/* Progress dots */
+.progress {
+  display: flex; gap: 6px; justify-content: center;
+  margin-bottom: 28px;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, transform 0.3s;
+}
+.dot.active { background: var(--green); transform: scale(1.3); }
+.dot.done { background: var(--green-mid); }
+
+/* Admin */
+#adminBtn {
+  position: fixed; bottom: 20px; right: 20px;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: white; border: 1px solid var(--border);
+  color: var(--light); font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: color 0.15s, border-color 0.15s; z-index: 100;
+}
+#adminBtn:hover { color: var(--muted); border-color: var(--muted); }
+
+.modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,20,30,0.5); backdrop-filter: blur(4px);
+  z-index: 200; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: white; border-radius: var(--radius);
+  width: 100%; max-width: 620px; max-height: 86vh;
+  overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 24px 64px rgba(10,20,30,0.22);
+  animation: up 0.22s ease both;
+}
+.modal-head {
+  padding: 22px 26px 18px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.modal-head h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: var(--navy); }
+.modal-close {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--off); border: none; cursor: pointer;
+  color: var(--muted); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-body { padding: 24px 26px; overflow-y: auto; flex: 1; }
+
+.admin-input {
+  width: 100%; padding: 12px 14px;
+  background: var(--off); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300;
+  color: var(--text); outline: none; margin-bottom: 12px;
+  transition: border-color 0.18s;
+}
+.admin-input:focus { border-color: var(--green); background: white; }
+
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 22px;
+}
+.stat-box {
+  background: var(--off); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px 10px; text-align: center;
+}
+.stat-num { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--navy); }
+.stat-label { font-size: 10px; color: var(--muted); margin-top: 2px; letter-spacing: 0.05em; }
+
+.resp-table { width: 100%; border-collapse: collapse; }
+.resp-table th {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left;
+}
+.resp-table td {
+  font-size: 13px; padding: 11px 10px;
+  border-bottom: 1px solid rgba(42,68,55,0.06); vertical-align: middle;
+}
+.resp-table tr:last-child td { border-bottom: none; }
+.td-name { color: var(--navy); font-weight: 400; }
+.td-time { color: var(--light); font-size: 11px; }
+
+.chip {
+  display: inline-block; padding: 3px 9px;
+  border-radius: 20px; font-size: 10.5px; font-weight: 500;
+}
+.chip-c { background: #e6f2ea; color: #2a5e40; }
+.chip-f { background: #f4ebe8; color: #7a3a2a; }
+.chip-y { background: var(--green-light); color: var(--green-mid); }
+.chip-n { background: var(--red-light); color: var(--red); }
+
+.no-resp { text-align: center; padding: 28px 0; color: var(--muted); font-size: 13px; }
+
+.clear-btn {
+  font-size: 11px; color: #b34040;
+  background: none; border: 1px solid #f5c6c6;
+  border-radius: 6px; padding: 7px 14px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+}
+.clear-btn:hover { background: #fff0f0; }
+
+.export-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+  color: var(--green); background: var(--green-light);
+  border: 1px solid rgba(42,68,55,0.2);
+  border-radius: 6px; padding: 7px 16px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background 0.15s, box-shadow 0.15s;
+}
+.export-btn:hover { background: #d4e6da; box-shadow: 0 2px 8px rgba(42,68,55,0.12); }
+
+/* Divider in step 3 */
+.step-divider {
+  height: 1px; background: var(--border); margin: 22px 0;
+}
+
+@keyframes up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.footer {
+  margin-top: 30px; font-size: 11px; color: var(--light);
+  letter-spacing: 0.08em; animation: up 0.7s 0.25s ease both;
+}
+
+@media (max-width: 540px) {
+  .card { padding: 28px 22px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .modal-head, .modal-body { padding-left: 18px; padding-right: 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="hdr">
+    <div class="hdr-tag">Rehearsal Dinner</div>
+    <h1>RSVP &amp; <em>Meal Selection</em></h1>
+    <p class="hdr-sub">Search your name to get started</p>
+  </header>
+
+  <div class="card">
+
+    <!-- Step 1: Search -->
+    <div class="step active" id="step1">
+      <div class="progress">
+        <div class="dot active" id="d1"></div>
+        <div class="dot" id="d2"></div>
+        <div class="dot" id="d3"></div>
+        <div class="dot" id="d4"></div>
+      </div>
+      <p class="sec-label">Step 1 of 3</p>
+      <p class="sec-title">Find your name</p>
+      <p class="sec-desc">Type your first or last name to locate your reservation.</p>
+
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="5" stroke="#c0c0c0" stroke-width="1.5"/>
+          <path d="M10.5 10.5L14 14" stroke="#c0c0c0" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="e.g. Smith or Jane" autocomplete="off" oninput="handleSearch()"/>
+      </div>
+      <div class="results-list" id="resultsList">
+        <div class="no-results" style="color:var(--light);padding:16px 0 4px;">Start typing to search…</div>
+      </div>
+    </div>
+
+    <!-- Step 2: Attendance -->
+    <div class="step" id="step2">
+      <div class="progress">
+        <div class="dot done" id="d1b"></div>
+        <div class="dot active" id="d2b"></div>
+        <div class="dot" id="d3b"></div>
+        <div class="dot" id="d4b"></div>
+      </div>
+      <p class="sec-label">Step 2 of 3</p>
+      <p class="sec-title" id="step2Title">Will you be joining us?</p>
+      <p class="sec-desc">Please confirm attendance for each guest in your party.</p>
+
+      <div id="attendBlocks"></div>
+
+      <div style="margin-top:22px">
+        <button class="btn btn-primary" onclick="handleAttendConfirm()">Continue →</button>
+        <button class="btn btn-ghost" onclick="goBack(1)">← Search again</button>
+      </div>
+      <p class="err" id="attendErr"></p>
+    </div>
+
+    <!-- Step 3: Meal selection (only for attending guests) -->
+    <div class="step" id="step3">
+      <div class="progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+      <p class="sec-label">Step 3 of 3</p>
+      <p class="sec-title">Choose your entrée</p>
+      <p class="sec-desc" id="step3Desc">Please select a meal for each attending guest.</p>
+
+      <div id="personBlocks"></div>
+
+      <div style="margin-top:22px">
+        <button class="btn btn-primary" onclick="handleMealConfirm()">Confirm Everything</button>
+        <button class="btn btn-ghost" onclick="goBack(2)">← Back</button>
+      </div>
+      <p class="err" id="mealErr"></p>
+    </div>
+
+    <!-- Step 4: Success -->
+    <div class="step" id="step4">
+      <div class="progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+      </div>
+      <div class="success-wrap">
+        <div class="success-ring">
+          <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
+            <path d="M2 10L9 17L22 2" stroke="#2a4437" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>You're all set!</h2>
+        <p id="successMsg">Your RSVP has been saved.<br>We can't wait to celebrate with you.</p>
+        <div class="success-pills" id="successPills"></div>
+        <p style="font-size:12px;color:var(--light);margin-top:18px;">With love 🤍</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="footer">Kindly respond at your earliest convenience</p>
+</div>
+
+<!-- Admin -->
+<button id="adminBtn" onclick="openAdmin()" title="Admin">⚙</button>
+
+<div class="modal-bg" id="adminModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Guest Responses</h3>
+      <button class="modal-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="adminLogin">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Enter the admin password to view responses.</p>
+        <input class="admin-input" type="password" id="adminPw" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdmin()"/>
+        <button class="btn btn-primary" onclick="checkAdmin()">View Responses</button>
+        <p class="err" id="adminErr"></p>
+      </div>
+      <div id="adminMain" style="display:none">
+        <div class="stats-row" id="statsRow"></div>
+        <div id="responseTable"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+          <button class="export-btn" onclick="exportCSV()">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0">
+              <path d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 9.5v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Export CSV
+          </button>
+          <button class="clear-btn" onclick="clearResponses()">Clear all responses</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GUESTS = [
+  { id:1,  primary:"Reece Strohm",        partner:"Kendyl Paris" },
+  { id:2,  primary:"Mark Fair",            partner:"Kaylee Utterback" },
+  { id:3,  primary:"Reece Bogan",          partner:"Helena Bogan" },
+  { id:4,  primary:"Jake Henderson",       partner:"Abby McGregor" },
+  { id:5,  primary:"Trevor Strohm",        partner:"Kara Strohm" },
+  { id:6,  primary:"Ryan Paris",           partner:"Makayla Abbot" },
+  { id:7,  primary:"Justin Glass",         partner:"Amy Glass" },
+  { id:8,  primary:"Madison Sestina",      partner:"Nate Sestina" },
+  { id:9,  primary:"Leanne Hively",        partner:"Doug Watkins" },
+  { id:10, primary:"Abby Wells",           partner:"Charlie Tighe" },
+  { id:11, primary:"Maya Walters",         partner:null },
+  { id:12, primary:"Avery Skinner",        partner:null },
+  { id:13, primary:"Merideth Jewell Frey", partner:"Matt Frey" },
+  { id:14, primary:"Lesley Paris",         partner:"Ted Paris" },
+  { id:15, primary:"Julie Strohm",         partner:"Brian Strohm" },
+];
+
+const MEALS = [
+  { value:"Garlic Grilled Chicken", sub:"Butter whipped mashed potatoes, grilled broccolini, pan jus" },
+  { value:"Rosemary Bistro Filet",  sub:"Herb roasted potatoes, chef's seasonal vegetable, thyme demi-glace" },
+];
+
+const PW  = "KJPRRS2026";
+const SUPABASE_URL  = "https://anxwvlxzidaddxqafnsv.supabase.co";
+const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFueHd2bHh6aWRhZGR4cWFmbnN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTY3ODAsImV4cCI6MjA5MzE3Mjc4MH0.RJXuGfKKdbCIRNctSm7ERQyNzTY7Mr3AKUDNY03Jlfo";
+
+let selected = null;
+let attendance = [];
+
+// ── Supabase helpers ──────────────────────────────────────
+async function sbFetch(path, method = 'GET', body = null, extraHeaders = {}) {
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+    ...extraHeaders,
+  };
+  const opts = { method, headers };
+  if (body !== null) opts.body = JSON.stringify(body);
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, opts);
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('Supabase error:', err);
+    throw new Error(err);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+async function getResponses() {
+  try {
+    const rows = await sbFetch('rsvps?select=*&order=submitted_at.asc');
+    const map = {};
+    for (const row of rows) {
+      if (!map[row.party_id]) {
+        map[row.party_id] = {
+          partyId: row.party_id,
+          party: [],
+          attending: [],
+          meals: [],
+          timestamp: row.submitted_at,
+        };
+      }
+      map[row.party_id].party.push(row.guest_name);
+      map[row.party_id].attending.push(row.attending);
+      map[row.party_id].meals.push(row.meal);
+    }
+    return Object.values(map);
+  } catch(e) {
+    console.error('getResponses error', e);
+    return [];
+  }
+}
+
+async function saveResponse(entry) {
+  // Delete any existing rows for this party
+  await sbFetch(`rsvps?party_id=eq.${entry.partyId}`, 'DELETE', null, { 'Prefer': 'return=minimal' });
+
+  // Insert one row per guest
+  const rows = entry.party.map((name, i) => ({
+    party_id:    entry.partyId,
+    guest_name:  name,
+    party_names: entry.party.join(' & '),
+    attending:   entry.attending[i],
+    meal:        entry.meals[i] || null,
+  }));
+
+  await sbFetch('rsvps', 'POST', rows, { 'Prefer': 'return=minimal' });
+}
+
+// ── Helpers ───────────────────────────────────────────────
+function initials(name) {
+  return name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+function members() {
+  return [selected.primary, selected.partner].filter(Boolean);
+}
+
+// ── Step 1: Search ────────────────────────────────────────
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const list = document.getElementById('resultsList');
+  if (!q) {
+    list.innerHTML = '<div class="no-results" style="color:var(--light);padding:16px 0 4px;">Start typing to search…</div>';
+    return;
+  }
+  const matches = GUESTS.filter(g =>
+    g.primary.toLowerCase().includes(q) ||
+    (g.partner && g.partner.toLowerCase().includes(q))
+  );
+  if (!matches.length) {
+    list.innerHTML = '<div class="no-results">No guests found. Check spelling or contact the couple.</div>';
+    return;
+  }
+  list.innerHTML = matches.map(g => `
+    <div class="guest-row" onclick="selectGuest(${g.id})">
+      <div class="guest-avatar">${initials(g.primary)}</div>
+      <div class="guest-info">
+        <div class="guest-name">${g.primary}</div>
+        ${g.partner ? `<div class="guest-partner">+ ${g.partner}</div>` : ''}
+      </div>
+      <div class="guest-arrow">›</div>
+    </div>
+  `).join('');
+}
+
+async function selectGuest(id) {
+  selected = GUESTS.find(g => g.id === id);
+  if (!selected) return;
+
+  const m = members();
+  const first = selected.primary.split(' ')[0];
+  const second = selected.partner ? selected.partner.split(' ')[0] : null;
+  document.getElementById('step2Title').textContent =
+    second ? `Hi, ${first} & ${second}!` : `Hi, ${first}!`;
+
+  // Load existing attendance if re-submitting
+  const all = await getResponses();
+  const existing = all.find(r => r.partyId === id);
+  attendance = m.map((_,i) => existing ? existing.attending[i] : null);
+
+  // Build attendance blocks
+  document.getElementById('attendBlocks').innerHTML = m.map((name, i) => `
+    <div class="attend-block" id="ablock_${i}">
+      <div class="attend-header">
+        <div class="attend-avatar">${initials(name)}</div>
+        <div class="attend-name">${name}</div>
+        ${i===0 ? '<span class="you-badge">You</span>' : ''}
+      </div>
+      <div class="attend-btns">
+        <button class="attend-btn ${attendance[i]===true?'yes-active':''}" id="yes_${i}" onclick="setAttend(${i},true)">
+          ✓&nbsp; Attending
+        </button>
+        <button class="attend-btn ${attendance[i]===false?'no-active':''}" id="no_${i}" onclick="setAttend(${i},false)">
+          ✕&nbsp; Declining
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  goTo('step2');
+}
+
+function setAttend(idx, val) {
+  attendance[idx] = val;
+  const block = document.getElementById(`ablock_${idx}`);
+  const yBtn  = document.getElementById(`yes_${idx}`);
+  const nBtn  = document.getElementById(`no_${idx}`);
+  block.classList.toggle('attending', val === true);
+  block.classList.toggle('declining', val === false);
+  yBtn.classList.toggle('yes-active', val === true);
+  nBtn.classList.toggle('no-active', val === false);
+}
+
+// ── Step 2 → 3 ────────────────────────────────────────────
+async function handleAttendConfirm() {
+  document.getElementById('attendErr').textContent = '';
+  const m = members();
+  for (let i = 0; i < m.length; i++) {
+    if (attendance[i] === null || attendance[i] === undefined) {
+      document.getElementById('attendErr').textContent =
+        `Please select attending or declining for ${m[i].split(' ')[0]}.`;
+      return;
+    }
+  }
+
+  const attendingCount = attendance.filter(Boolean).length;
+
+  if (attendingCount === 0) {
+    finalizeNoAttendees();
+    return;
+  }
+
+  const all = await getResponses();
+  const existing = all.find(r => r.partyId === selected.id);
+
+  document.getElementById('personBlocks').innerHTML = m.map((name, i) => {
+    const prev = existing ? existing.meals[i] : null;
+    if (!attendance[i]) {
+      // Declining — show a dimmed block
+      return `
+        <div class="person-block declining-block">
+          <div class="person-name-row">${name} ${i===0?'<span class="you-badge">You</span>':''}</div>
+          <div class="declining-label">
+            <span>✕</span> Not attending
+          </div>
+        </div>`;
+    }
+    return `
+      <div class="person-block">
+        <div class="person-name-row">
+          ${name}
+          ${i===0 ? '<span class="you-badge">You</span>' : ''}
+        </div>
+        <div class="meal-opts">
+          ${MEALS.map(meal => `
+            <label class="meal-opt">
+              <input type="radio" name="meal_${i}" value="${meal.value}" ${prev===meal.value?'checked':''}/>
+              <div class="meal-tile">
+                <div class="meal-radio"></div>
+                <div class="meal-text">
+                  <div class="meal-title">${meal.value}</div>
+                  <div class="meal-sub">${meal.sub}</div>
+                </div>
+              </div>
+            </label>
+          `).join('')}
+        </div>
+      </div>`;
+  }).join('');
+
+  goTo('step3');
+}
+
+async function handleMealConfirm() {
+  document.getElementById('mealErr').textContent = '';
+  const m = members();
+  const meals = [];
+
+  for (let i = 0; i < m.length; i++) {
+    if (!attendance[i]) { meals.push(null); continue; }
+    const sel = document.querySelector(`input[name="meal_${i}"]:checked`);
+    if (!sel) {
+      document.getElementById('mealErr').textContent =
+        `Please select a meal for ${m[i].split(' ')[0]}.`;
+      return;
+    }
+    meals.push(sel.value);
+  }
+
+  const confirmBtn = document.querySelector('#step3 .btn-primary');
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = 'Saving…';
+
+  try {
+    await saveResponse({ partyId: selected.id, party: m, attending: attendance, meals, timestamp: new Date().toISOString() });
+    buildSuccess(m, meals);
+    goTo('step4');
+  } catch(e) {
+    document.getElementById('mealErr').textContent = 'Something went wrong saving your response. Please try again.';
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Confirm Everything';
+  }
+}
+
+async function finalizeNoAttendees() {
+  const m = members();
+  await saveResponse({
+    partyId: selected.id,
+    party: m,
+    attending: attendance,
+    meals: m.map(() => null),
+    timestamp: new Date().toISOString()
+  });
+  document.getElementById('successMsg').textContent =
+    "We're sorry you can't make it — thank you for letting us know.";
+  buildSuccess(m, m.map(() => null));
+  goTo('step4');
+}
+
+function buildSuccess(m, meals) {
+  document.getElementById('successPills').innerHTML = m.map((name, i) => {
+    const att = attendance[i];
+    return `
+      <div class="success-pill ${!att ? 'declining-pill' : ''}">
+        <span class="sp-name">${name}</span>
+        <span class="${att ? 'sp-meal' : 'sp-no'}">${att ? meals[i] : 'Not attending'}</span>
+      </div>`;
+  }).join('');
+}
+
+// ── Navigation ────────────────────────────────────────────
+function goTo(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goBack(toStep) {
+  if (toStep === 1) {
+    document.getElementById('searchInput').value = '';
+    handleSearch();
+    goTo('step1');
+  } else {
+    goTo('step2');
+  }
+}
+
+// ── Admin ─────────────────────────────────────────────────
+function openAdmin() {
+  document.getElementById('adminModal').classList.add('open');
+  document.getElementById('adminPw').value = '';
+  document.getElementById('adminErr').textContent = '';
+  document.getElementById('adminLogin').style.display = 'block';
+  document.getElementById('adminMain').style.display = 'none';
+  setTimeout(() => document.getElementById('adminPw').focus(), 100);
+}
+function closeAdmin() { document.getElementById('adminModal').classList.remove('open'); }
+document.getElementById('adminModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeAdmin(); });
+
+function checkAdmin() {
+  if (document.getElementById('adminPw').value === PW) {
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminMain').style.display = 'block';
+    renderAdmin();
+  } else {
+    document.getElementById('adminErr').textContent = 'Incorrect password.';
+  }
+}
+
+async function renderAdmin() {
+  document.getElementById('statsRow').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:12px 0;">Loading…</div>';
+  document.getElementById('responseTable').innerHTML = '';
+
+  const responses = await getResponses();
+  const totalGuests = GUESTS.reduce((a,g) => a + 1 + (g.partner ? 1 : 0), 0);
+  let attending = 0, declining = 0, chicken = 0, filet = 0;
+  responses.forEach(r => {
+    r.attending.forEach((att, i) => {
+      if (att) { attending++; if (r.meals[i] === 'Garlic Grilled Chicken') chicken++; else if (r.meals[i] === 'Rosemary Bistro Filet') filet++; }
+      else if (att === false) declining++;
+    });
+  });
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${attending+declining}/${totalGuests}</div><div class="stat-label">Responded</div></div>
+    <div class="stat-box"><div class="stat-num">${attending}</div><div class="stat-label">✓ Attending</div></div>
+    <div class="stat-box"><div class="stat-num">${chicken}</div><div class="stat-label">🍗 Chicken</div></div>
+    <div class="stat-box"><div class="stat-num">${filet}</div><div class="stat-label">🥩 Filet</div></div>
+  `;
+
+  if (!responses.length) {
+    document.getElementById('responseTable').innerHTML = '<div class="no-resp">No responses yet.</div>';
+    return;
+  }
+
+  const sorted = [...responses].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const rows = sorted.flatMap(r =>
+    r.party.map((name, i) => {
+      const att = r.attending[i];
+      const meal = r.meals[i];
+      return `<tr>
+        <td class="td-name">${name}</td>
+        <td><span class="chip ${att ? 'chip-y' : 'chip-n'}">${att ? 'Attending' : 'Declining'}</span></td>
+        <td>${att && meal ? `<span class="chip ${meal==='Garlic Grilled Chicken'?'chip-c':'chip-f'}">${meal==='Garlic Grilled Chicken'?'Chicken':'Filet'}</span>` : '<span style="color:var(--light);font-size:12px;">—</span>'}</td>
+        <td class="td-time">${new Date(r.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</td>
+      </tr>`;
+    })
+  ).join('');
+
+  document.getElementById('responseTable').innerHTML = `
+    <table class="resp-table">
+      <thead><tr><th>Guest</th><th>RSVP</th><th>Entrée</th><th>Submitted</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+async function clearResponses() {
+  if (confirm('Clear all RSVP responses? This cannot be undone.')) {
+    await sbFetch('rsvps?party_id=gte.0', 'DELETE', null, { 'Prefer': 'return=minimal' });
+    renderAdmin();
+  }
+}
+
+async function exportCSV() {
+  const responses = await getResponses();
+  if (!responses.length) { alert('No responses to export yet.'); return; }
+
+  const rows = [['Guest Name', 'RSVP', 'Entrée', 'Party', 'Submitted']];
+  const sorted = [...responses].sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+  sorted.forEach(r => {
+    r.party.forEach((name, i) => {
+      const att  = r.attending[i] ? 'Attending' : 'Declining';
+      const meal = r.meals[i] || '—';
+      const party = r.party.join(' & ');
+      const ts   = new Date(r.timestamp).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+      rows.push([name, att, meal, party, ts]);
+    });
+  });
+
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toLocaleDateString('en-US', { month:'2-digit', day:'2-digit', year:'numeric' }).replace(/\//g,'-');
+  a.href = url;
+  a.download = `rehearsal-dinner-rsvps-${date}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('adminPw').addEventListener('keydown', e => { if (e.key === 'Enter') checkAdmin(); });
+</script>
+</body>
+</html>
